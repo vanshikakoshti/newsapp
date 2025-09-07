@@ -1,7 +1,11 @@
-{
-  "status": "ok",
-  "totalResults": 35,
-  "articles": [
+import React, { Component } from 'react'
+import NewsItems from './NewsItems'
+import PropTypes from 'prop-types'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import Spinner from './Spinner'
+
+export  class News extends Component {
+    articles =  [
     {
       "source": {
         "id": "axios",
@@ -263,4 +267,67 @@
       "content": "TORONTO (AP) Sydney Sweeney came to the Toronto International Film Festival wanting to talk about her new film Christy, not her American Eagle ad campaign. After a rapturous response to the movie, sh… [+3062 chars]"
     }
   ]
+
+  
+    static defaultProps ={
+        country:'us',
+        pageSize: 8,
+        category:'general',
+    }
+    capitalizeFirstLetter =(string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+    static propTypes ={
+        country: PropTypes.string,
+        pageSize: PropTypes.number,
+        category: PropTypes.string,
+    }
+    constructor(props){
+        super(props);
+        this.state = {
+            articles: this.articles,
+            loading: true,
+            page: 1,
+        }
+        document.title = `${this.capitalizeFirstLetter(this.props.category)} - NewsMonkey`
+    }
+    handlePrevClick = async() => {
+        this.setState({ page: this.state.page - 1})
+        this.updateNews();
+    }
+    handleNextClick = async() => {      
+        this.setState({ page: this.state.page + 1})
+        this.updateNews();       
+    }
+
+  render() {
+    return (
+      <>
+      <h1 className='text-center mt-4'>News App - Top {this.capitalizeFirstLetter(this.props.category)} Headlines</h1>
+        {/* {this.state.loading && <Spinner/>} */}
+         
+          <div className="container">
+            <div className="row my-5">
+              {this.state.articles.map((element) => {
+                return (
+                  <div className="col-md-4" key={element.url}>
+                    <NewsItems
+                      title={element.title ? element.title.slice(0, 45) : ""}
+                      description={element.description ? element.description.slice(0, 80) : ""}
+                      imageUrl={element.urlToImage}
+                      newsUrl={element.url}
+                      author={element.author}
+                      date={element.publishedAt}
+                      source={element.source.name}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+       
+      </>
+    )
+  }
 }
+export default News;
