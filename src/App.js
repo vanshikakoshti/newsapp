@@ -4,13 +4,15 @@ import News from './components/News'
 
 
 export default class App extends Component {
-  pageSize=10
+  pageSize=10;
+  apiKey = process.env.REACT_APP_NEWS_API;
+
   render() {
     return (
       <div>
         
       <Navbar/>
-      <News pageSize={this.pageSize} country="us" category="general"/>
+      <News apiKey={this.apiKey}  pageSize={this.pageSize} country="us" category="general"/>
    
       </div>
     )
